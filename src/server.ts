@@ -1,19 +1,10 @@
 import 'reflect-metadata';
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
 
 import './db/connection';
 
-const typeDefs = gql(`
-    type Query {
-        hello: String
-    }
-`);
-
-const resolvers = {
-  Query: {
-    hello: () => "Hello, world!"
-  }
-};
+import { typeDefs } from './graphql/typeDefs';
+import { resolvers } from './graphql/resolvers';
 
 const server = new ApolloServer({ typeDefs, resolvers })
 
