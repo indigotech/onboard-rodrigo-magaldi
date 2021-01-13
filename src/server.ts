@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import { ApolloServer, gql } from 'apollo-server';
 
+import './db/connection';
+
 const typeDefs = gql(`
     type Query {
         hello: String
