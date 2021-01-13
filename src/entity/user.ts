@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-class User {
+export class User {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,5 +15,3 @@ class User {
   @Column()
   isActive: boolean;
 }
-
-export default User;
