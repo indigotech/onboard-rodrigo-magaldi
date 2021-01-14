@@ -4,7 +4,7 @@
   "description": "Onboarding Taqtile Magaldi",
   "main": "index.js",
   "scripts": {
-    "dev:server": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts"
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "@typescript-eslint/parser": "4.13.0",
     "eslint": "7.17.0",
     "ts-node-dev": "1.1.1",
+    "tsconfig-paths": "3.9.0",
     "typescript": "4.1.3"
   }
 }
