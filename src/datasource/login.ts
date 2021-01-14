@@ -3,8 +3,8 @@ import { getRepository } from "typeorm";
 import { LoginInterface } from "graphql/interfaces";
 import { compareHash } from "provider/hash-provider";
 
-import auth from '../config/auth';
 import { sign } from "jsonwebtoken";
+import auth from "config/auth";
 
 export const login = async ({email, password, rememberMe}: LoginInterface): Promise<{user: User | undefined, token: string}> => {
 

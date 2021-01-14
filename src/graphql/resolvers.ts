@@ -11,7 +11,7 @@ export const resolvers = {
     const { user, token } = await login({email, password, rememberMe});
     return {
       user,
-      token
+      token: token,
     };
     }
   }
