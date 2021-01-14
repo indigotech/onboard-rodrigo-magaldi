@@ -7,8 +7,8 @@ export const resolvers = {
   },
 
   Mutation: {
-  login: async (_: unknown, { email, password }: LoginInterface) => {
-    const { user, token } = await login({email, password});
+  login: async (_: unknown, { email, password, rememberMe }: LoginInterface) => {
+    const { user, token } = await login({email, password, rememberMe});
     return {
       user,
       token
