@@ -1,4 +1,5 @@
 export interface LoginInterface {
-  email: String,
-  password: String
+  email: string,
+  password: string,
+  rememberMe?: boolean
 }

@@ -1,4 +1,5 @@
-import { LoginInterface } from "./interfaces";
+import { login } from "datasource/login";
+import { LoginInterface } from "graphql/interfaces";
 
 export const resolvers = {
   Query: {
@@ -6,19 +7,12 @@ export const resolvers = {
   },
 
   Mutation: {
-  login: (_: unknown, { email, password }: LoginInterface) => {
-      if (email && password) {
-        return {
-          user: {
-            id: 1,
-            name: 'rodrigo',
-            email: 'rod.magaldi@gmail.com',
-            birthDate: '02-04-1999',
-            cpf: '12312312312',
-          },
-          token: 'my_token',
-        };
-      }
+  login: async (_: unknown, { email, password, rememberMe }: LoginInterface) => {
+    const { user, token } = await login({email, password, rememberMe});
+    return {
+      user,
+      token: token,
+    };
     }
   }
 };
