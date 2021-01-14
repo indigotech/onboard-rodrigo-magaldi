@@ -1,13 +1,10 @@
 import { User } from "entity/user";
 import { getRepository } from "typeorm";
 import { LoginInterface } from "graphql/interfaces";
-import { compareHash } from "provider/hash-provider";
+import { compareHash, generateHash } from "provider/hash-provider";
 
-import auth from '../config/auth';
-import { sign } from "jsonwebtoken";
+export const login = async ({email, password}: LoginInterface): Promise<User | undefined> => {
 
-
-export const login = async ({email, password}: LoginInterface): Promise<{user: User | undefined, token: string}> => {
   const user = await getRepository(User).findOne({
     where: { email: email }
   });
@@ -22,11 +19,5 @@ export const login = async ({email, password}: LoginInterface): Promise<{user: U
     throw Error("Credenciais inválidas.")
   }
 
-  const { secret, expiresIn } = auth.jwt;
-
-  const token = sign({ id: user.id }, secret, {
-    expiresIn: expiresIn
-  })
-
-  return { user, token };
+  return user;
 };

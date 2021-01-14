@@ -8,10 +8,10 @@ export const resolvers = {
 
   Mutation: {
   login: async (_: unknown, { email, password }: LoginInterface) => {
-    const { user, token } = await login({email, password});
+    const user = await login({email, password});
     return {
       user,
-      token
+      token: 'my_token',
     };
     }
   }
