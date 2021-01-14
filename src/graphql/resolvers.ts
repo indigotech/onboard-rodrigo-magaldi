@@ -1,5 +1,5 @@
-import { login } from "../datasource/login";
-import { LoginInterface } from "./interfaces";
+import { login } from "datasource/login";
+import { LoginInterface } from "graphql/interfaces";
 
 export const resolvers = {
   Query: {

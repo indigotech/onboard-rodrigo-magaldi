@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server';
 
-import './db/connection';
+import 'db/connection';
 
-import { typeDefs } from './graphql/typeDefs';
-import { resolvers } from './graphql/resolvers';
+import { typeDefs } from 'graphql/typeDefs';
+import { resolvers } from 'graphql/resolvers';
 
 const server = new ApolloServer({ typeDefs, resolvers })
 
