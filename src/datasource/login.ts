@@ -18,8 +18,7 @@ export const login = async ({email, password}: LoginInterface): Promise<{user: U
     throw Error("Usuário não encontrado!")
   }
 
-  const passwordMatched = (password === user.password)
-  //await hashProvider.compareHash(password, user.password)
+  const passwordMatched = await hashProvider.compareHash(password, user.password)
 
   if (!passwordMatched) {
     throw Error("Senha incorreta! Tente novamente.")
