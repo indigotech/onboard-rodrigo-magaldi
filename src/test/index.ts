@@ -1,6 +1,6 @@
 import request from "supertest";
-import assert from "assert";
 import { setupServer } from "server";
+import { expect } from 'chai';
 
 before(async () => {
   setupServer();
@@ -16,7 +16,7 @@ describe("GraphQL sample query test", () => {
         if(err) {
           return done(err);
         }
-        assert.strictEqual(res.body.data.hello, "Hello, world!")
+        expect(res.body.data.hello).to.equal("Hello, world!")
         done();
       })
   })
