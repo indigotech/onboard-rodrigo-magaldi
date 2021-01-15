@@ -3,11 +3,10 @@ import { User } from 'entity/user';
 import { resolvers } from 'graphql/resolvers';
 import { typeDefs } from 'graphql/typeDefs';
 import { createConnection } from 'typeorm';
-
-import dotenv from 'dotenv';
+import { envConfig } from 'env-config';
 
 export async function setup() {
-  dotenv.config();
+  envConfig();
   await connectToDatabase();
   await runServer();
 }
@@ -29,6 +28,6 @@ export async function runServer() {
     resolvers,
   });
 
-  await server.listen();
-  console.log('Server listening on default port');
+  await server.listen(process.env.PORT);
+  console.log(`Server listening on port ${process.env.PORT}`);
 }

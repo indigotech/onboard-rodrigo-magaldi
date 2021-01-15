@@ -9,7 +9,7 @@ describe('GraphQL sample query test', () => {
   });
 
   it('Should return `Hello, world!`', (done) => {
-    request('http://localhost:4000')
+    request(`http://localhost:${process.env.PORT}`)
       .post('/graphql')
       .send({ query: '{ hello }' })
       .expect(200)
