@@ -1,5 +1,7 @@
 import { createConnection } from 'typeorm';
 
-createConnection().then(() => {
-  return console.log("Connection to db successful");
-});
+export const connection = () => {
+  createConnection().then(() => {
+    return console.log("Connection to db successful");
+  })
+}

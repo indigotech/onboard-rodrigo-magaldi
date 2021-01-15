@@ -1,11 +1,20 @@
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server';
 
-import 'db/connection';
+import { connection } from 'db/connection';
 
 import { typeDefs } from 'graphql/typeDefs';
 import { resolvers } from 'graphql/resolvers';
 
-const server = new ApolloServer({ typeDefs, resolvers })
+export const setupServer = (): ApolloServer => {
+  const server = new ApolloServer({ typeDefs, resolvers });
+  return server;
+}
 
-server.listen(3030, () => console.log("Server listening on port 3030"));
+export const startServer = async () => {
+  connection();
+  const server = setupServer();
+  await server.listen(3030, () => console.log("Server listening on port 3030"));
+}
+
+startServer();
