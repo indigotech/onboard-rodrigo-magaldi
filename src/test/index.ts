@@ -1,14 +1,15 @@
+import "reflect-metadata";
 import request from "supertest";
-import { setupServer } from "server";
+import { setup } from "setup-server";
 import { expect } from 'chai';
 
 before(async () => {
-  setupServer();
+  await setup();
 })
 
 describe("GraphQL sample query test", () => {
   it("Should return `Hello, world!`", (done) => {
-    request("http://localhost:3030")
+    request("http://localhost:4000")
       .post("/graphql")
       .send({ query: '{ hello }' })
       .expect(200)
