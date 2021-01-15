@@ -1,5 +1,7 @@
 # Onboarding Taqtile - Rodrigo Magaldi
+
 ## Description
+
 Nodejs GraphQL [Apollo server](https://www.apollographql.com/docs/apollo-server/). [PostgreSQL](https://www.postgresql.org/about/) database managed by [typeORM](https://typeorm.io/#/) runs on a [docker](https://www.docker.com/) container.
 
 ## Environment and tools
@@ -17,7 +19,6 @@ Dev Tools:
 - [Prettier](https://www.npmjs.com/package/prettier)
 
 Both **ESLint** and **Prettier** are being used according to this [template](https://github.com/indigotech/template-node)'s config files.
-
 
 ## Steps to run and debug
 

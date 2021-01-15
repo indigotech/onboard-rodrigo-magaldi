@@ -10,15 +10,15 @@ export async function setup() {
 
 async function connectToDatabase() {
   await createConnection();
-  console.log("Database connection successful");
+  console.log('Database connection successful');
 }
 
 export async function runServer() {
   const server = new ApolloServer({
     typeDefs,
-    resolvers
+    resolvers,
   });
 
-  await server.listen()
-  console.log("Server listening on default port");
+  await server.listen();
+  console.log('Server listening on default port');
 }
