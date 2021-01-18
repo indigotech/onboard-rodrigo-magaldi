@@ -8,14 +8,17 @@ import { User } from 'entity/user';
 import jwt from 'jsonwebtoken';
 
 let userRepository: Repository<User>;
+let requestUrl: string;
 
 before(async () => {
   await setup();
+  userRepository = getRepository(User);
+  requestUrl = `http://localhost:${process.env.PORT}`;
 });
 
 describe('GraphQL sample query test', () => {
   it('Should return `Hello, world!`', (done) => {
-    request(`http://localhost:${process.env.PORT}`)
+    request(requestUrl)
       .post('/graphql')
       .send({ query: '{ hello }' })
       .expect(200)
@@ -35,7 +38,6 @@ describe('User mutation test', async () => {
   });
 
   after(async () => {
-    userRepository = getRepository(User);
     await userRepository.clear();
   });
 
@@ -51,7 +53,7 @@ describe('User mutation test', async () => {
     }`,
     };
 
-    request(`http://localhost:${process.env.PORT}`)
+    request(requestUrl)
       .post('/graphql')
       .send(mutation)
       .expect(200)
