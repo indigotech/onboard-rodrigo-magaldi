@@ -2,14 +2,18 @@ import 'reflect-metadata';
 import request from 'supertest';
 import { setup } from 'setup-server';
 import { expect } from 'chai';
-import { execute } from 'test/sample-data';
+import { createSampleUser, sampleLoginInput } from 'test/sample-data';
+import { getRepository, Repository } from 'typeorm';
+import { User } from 'entity/user';
+import jwt from 'jsonwebtoken';
+
+let userRepository: Repository<User>;
+
+before(async () => {
+  await setup();
+});
 
 describe('GraphQL sample query test', () => {
-  before(async () => {
-    await setup();
-    execute();
-  });
-
   it('Should return `Hello, world!`', (done) => {
     request(`http://localhost:${process.env.PORT}`)
       .post('/graphql')
@@ -23,14 +27,42 @@ describe('GraphQL sample query test', () => {
         done();
       });
   });
-
-  it('Should return user information upon login'), (done) => {};
 });
 
-// connect test db and server
-// create sample data in database
-// create sample input
-// run test
-// check for the correct response
-// check db after testing
-// clear db
+describe('User mutation test', async () => {
+  before(async () => {
+    await createSampleUser();
+  });
+
+  after(async () => {
+    userRepository = getRepository(User);
+    await userRepository.clear();
+  });
+
+  it('Should return user information upon login', (done) => {
+    const mutation = {
+      query: `mutation{
+      login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}", rememberMe: true){
+        user{
+          name
+        },
+        token
+      }
+    }`,
+    };
+
+    request(`http://localhost:${process.env.PORT}`)
+      .post('/graphql')
+      .send(mutation)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body.data.login.user.name).to.equal('rodrigo');
+        expect(jwt.verify(res.body.data.login.token, process.env.JWT_SECRET)).to.not.throw;
+
+        done();
+      });
+  });
+});

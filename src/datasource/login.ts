@@ -25,9 +25,9 @@ export const login = async ({
     throw Error('Credenciais inválidas.');
   }
 
-  const { secret, expiresIn, rememberMeExpiresIn } = auth.jwt;
+  const { expiresIn, rememberMeExpiresIn } = auth.jwt;
 
-  const token = sign({ id: user.id }, secret, {
+  const token = sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: rememberMe ? rememberMeExpiresIn : expiresIn,
   });
 
