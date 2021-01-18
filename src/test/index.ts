@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import request from 'supertest';
 import { setup } from 'setup-server';
 import { expect } from 'chai';
-import { createSampleUser, sampleLoginInput } from 'test/sample-data';
 import { getRepository, Repository } from 'typeorm';
 import { User } from 'entity/user';
 import jwt from 'jsonwebtoken';
+import { generateHash } from 'provider/hash-provider';
 
 let userRepository: Repository<User>;
 let requestUrl: string;
@@ -25,7 +25,7 @@ describe('GraphQL sample query test', () => {
 
 describe('User mutation test', async () => {
   before(async () => {
-    await createSampleUser();
+    await addUserToDatabase('rodrigo', 'rodrigo@email.com', '01-01-1997', '12312312312', 'senha');
   });
 
   after(async () => {
@@ -36,7 +36,7 @@ describe('User mutation test', async () => {
     const mutation = {
       query: `
       mutation{
-        login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}", rememberMe: true){
+        login(email: "rodrigo@email.com", password: "senha", rememberMe: true){
           user{
             name
             email
@@ -54,7 +54,6 @@ describe('User mutation test', async () => {
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
     expect(response.body.data.login.user.cpf).to.equal('12312312312');
-
     expect(checkJWT(response.body.data.login.token, true)).to.equal(true);
   });
 
@@ -62,7 +61,7 @@ describe('User mutation test', async () => {
     const mutation = {
       query: `
       mutation{
-        login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}"){
+        login(email: "rodrigo@email.com", password: "senha"){
           user{
             name
             email
@@ -80,8 +79,6 @@ describe('User mutation test', async () => {
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
     expect(response.body.data.login.user.cpf).to.equal('12312312312');
-    expect(jwt.verify(response.body.data.login.token, process.env.JWT_SECRET)).to.not.throw;
-
     expect(checkJWT(response.body.data.login.token, false)).to.equal(true);
   });
 });
@@ -93,4 +90,16 @@ function checkJWT(token, rememberMe): boolean {
   } else {
     return verified['iat'] === verified['exp'] - 3600;
   }
+}
+
+async function addUserToDatabase(name, email, birthDate, cpf, password) {
+  const hashedPassword = await generateHash(password);
+  const user = userRepository.create({
+    name,
+    email,
+    birthDate,
+    cpf,
+    password: hashedPassword,
+  });
+  await userRepository.save(user);
 }
