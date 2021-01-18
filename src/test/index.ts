@@ -17,18 +17,9 @@ before(async () => {
 });
 
 describe('GraphQL sample query test', () => {
-  it('Should return `Hello, world!`', (done) => {
-    request(requestUrl)
-      .post('/graphql')
-      .send({ query: '{ hello }' })
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        expect(res.body.data.hello).to.equal('Hello, world!');
-        done();
-      });
+  it('Should return `Hello, world!`', async () => {
+    const response = await request(requestUrl).post('/graphql').send({ query: '{ hello }' });
+    expect(response.body.data.hello).to.equal('Hello, world!');
   });
 });
 
@@ -41,30 +32,26 @@ describe('User mutation test', async () => {
     await userRepository.clear();
   });
 
-  it('Should return user information upon login', (done) => {
+  it('Should return user information upon login', async () => {
     const mutation = {
       query: `mutation{
       login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}", rememberMe: true){
         user{
           name
+          email
+          birthDate
+          cpf
         },
         token
       }
     }`,
     };
 
-    request(requestUrl)
-      .post('/graphql')
-      .send(mutation)
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        expect(res.body.data.login.user.name).to.equal('rodrigo');
-        expect(jwt.verify(res.body.data.login.token, process.env.JWT_SECRET)).to.not.throw;
-
-        done();
-      });
+    const response = await request(requestUrl).post('/graphql').send(mutation);
+    expect(response.body.data.login.user.name).to.equal('rodrigo');
+    expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
+    expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
+    expect(response.body.data.login.user.cpf).to.equal('12312312312');
+    expect(jwt.verify(response.body.data.login.token, process.env.JWT_SECRET)).to.not.throw;
   });
 });
