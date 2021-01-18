@@ -2,10 +2,12 @@ import 'reflect-metadata';
 import request from 'supertest';
 import { setup } from 'setup-server';
 import { expect } from 'chai';
+import { execute } from 'test/sample-data';
 
 describe('GraphQL sample query test', () => {
   before(async () => {
     await setup();
+    execute();
   });
 
   it('Should return `Hello, world!`', (done) => {
@@ -21,4 +23,14 @@ describe('GraphQL sample query test', () => {
         done();
       });
   });
+
+  it('Should return user information upon login'), (done) => {};
 });
+
+// connect test db and server
+// create sample data in database
+// create sample input
+// run test
+// check for the correct response
+// check db after testing
+// clear db
