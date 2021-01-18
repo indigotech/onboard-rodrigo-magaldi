@@ -32,19 +32,47 @@ describe('User mutation test', async () => {
     await userRepository.clear();
   });
 
-  it('Should return user information upon login', async () => {
+  it('Should return user information upon login (with rememberMe)', async () => {
     const mutation = {
-      query: `mutation{
-      login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}", rememberMe: true){
-        user{
-          name
-          email
-          birthDate
-          cpf
-        },
-        token
+      query: `
+      mutation{
+        login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}", rememberMe: true){
+          user{
+            name
+            email
+            birthDate
+            cpf
+          },
+          token
+        }
       }
-    }`,
+    `,
+    };
+
+    const response = await request(requestUrl).post('/graphql').send(mutation);
+    expect(response.body.data.login.user.name).to.equal('rodrigo');
+    expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
+    expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
+    expect(response.body.data.login.user.cpf).to.equal('12312312312');
+
+    expect(checkJWT(response.body.data.login.token, true)).to.equal(true);
+  });
+
+  it('Should return user information upon login (without rememberMe)', async () => {
+    const mutation = {
+      query: `
+      mutation{
+        login(email: "${sampleLoginInput.email}", password: "${sampleLoginInput.password}"){
+          user{
+            name
+            email
+            birthDate
+            cpf
+          },
+          token
+        }
+      }
+    `,
     };
 
     const response = await request(requestUrl).post('/graphql').send(mutation);
@@ -53,5 +81,16 @@ describe('User mutation test', async () => {
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
     expect(response.body.data.login.user.cpf).to.equal('12312312312');
     expect(jwt.verify(response.body.data.login.token, process.env.JWT_SECRET)).to.not.throw;
+
+    expect(checkJWT(response.body.data.login.token, false)).to.equal(true);
   });
 });
+
+function checkJWT(token, rememberMe): boolean {
+  const verified = jwt.verify(token, process.env.JWT_SECRET);
+  if (rememberMe) {
+    return verified['iat'] === verified['exp'] - 604800;
+  } else {
+    return verified['iat'] === verified['exp'] - 3600;
+  }
+}
