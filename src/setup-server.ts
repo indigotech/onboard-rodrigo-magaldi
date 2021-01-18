@@ -4,6 +4,7 @@ import { resolvers } from 'graphql/resolvers';
 import { typeDefs } from 'graphql/typeDefs';
 import { createConnection } from 'typeorm';
 import { envConfig } from 'env-config';
+import { formatError } from 'error/errors';
 
 export async function setup() {
   envConfig();
@@ -26,6 +27,7 @@ export async function runServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    formatError: formatError,
   });
 
   await server.listen(process.env.PORT);

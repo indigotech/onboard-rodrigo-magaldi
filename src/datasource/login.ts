@@ -2,7 +2,7 @@ import { User } from 'entity/user';
 import { getRepository } from 'typeorm';
 import { LoginInterface } from 'graphql/interfaces';
 import { compareHash } from 'provider/hash-provider';
-
+import { CustomError } from 'error/errors';
 import { sign } from 'jsonwebtoken';
 
 export const login = async ({
@@ -15,13 +15,13 @@ export const login = async ({
   });
 
   if (!user) {
-    throw Error('Credenciais inválidas.');
+    throw new CustomError('Credenciais inválidas.', 401, 'Combinação email/senha inexistente.');
   }
 
   const passwordMatched = await compareHash(password, user.password);
 
   if (!passwordMatched) {
-    throw Error('Credenciais inválidas.');
+    throw new CustomError('Credenciais inválidas.', 401, 'Combinação email/senha inexistente.');
   }
 
   const token = sign({ id: user.id }, process.env.JWT_SECRET, {
