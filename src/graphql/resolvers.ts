@@ -1,6 +1,7 @@
 import { login } from 'datasource/login';
 import { createUser } from 'datasource/create-user';
 import { CreateuserInterface, LoginInterface } from 'graphql/interfaces';
+import { tokenIsValid } from 'provider/token-validation-provider';
 
 export const resolvers = {
   Query: {
@@ -15,7 +16,10 @@ export const resolvers = {
         token: token,
       };
     },
-    createUser: async (_: unknown, { name, email, birthDate, cpf, password }: CreateuserInterface) => {
+    createUser: async (_: unknown, { name, email, birthDate, cpf, password }: CreateuserInterface, context) => {
+      if (!tokenIsValid(context['token'])) {
+        throw Error('JWT inválido');
+      }
       const { user } = await createUser({ name, email, birthDate, cpf, password });
       return { user };
     },
