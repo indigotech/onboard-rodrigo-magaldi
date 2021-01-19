@@ -4,7 +4,6 @@ import { LoginInterface } from 'graphql/interfaces';
 import { compareHash } from 'provider/hash-provider';
 
 import { sign } from 'jsonwebtoken';
-import auth from 'config/auth';
 
 export const login = async ({
   email,
@@ -25,10 +24,8 @@ export const login = async ({
     throw Error('Credenciais inválidas.');
   }
 
-  const { secret, expiresIn, rememberMeExpiresIn } = auth.jwt;
-
-  const token = sign({ id: user.id }, secret, {
-    expiresIn: rememberMe ? rememberMeExpiresIn : expiresIn,
+  const token = sign({ id: user.id }, process.env.JWT_SECRET, {
+    expiresIn: rememberMe ? process.env.JWT_REMEMBER_ME_EXPIRATION : process.env.JWT_EXPIRATION,
   });
 
   return { user, token };
