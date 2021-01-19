@@ -56,7 +56,7 @@ describe('Login mutation test', async () => {
     const mutation = buildLoginMutation('notanemail', 'senha', false);
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.errors[0].message).to.equal('E-mail inválido.');
-    expect(response.body.errors[0].httpCode).to.equal(401);
+    expect(response.body.errors[0].httpCode).to.equal(400);
   });
 
   it('Should return CustomError with message `Credenciais inválidas` (email not found)', async () => {

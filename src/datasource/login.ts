@@ -12,7 +12,7 @@ export const login = async ({
   rememberMe,
 }: LoginInterface): Promise<{ user: User | undefined; token: string }> => {
   if (!emailIsValid(email)) {
-    throw new CustomError('E-mail inválido.', 401, 'E-mail indicado não condizente.');
+    throw new CustomError('E-mail inválido.', 400, 'E-mail indicado não condizente.');
   }
 
   const user = await getRepository(User).findOne({
