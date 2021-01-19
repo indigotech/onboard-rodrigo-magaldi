@@ -13,7 +13,11 @@ export class CustomError extends Error {
 
 export function formatError(error: any) {
   if (error.originalError?.name === 'CustomError') {
-    return { ...error };
+    return {
+      ...error.originalError,
+      message: error.message,
+      ...error,
+    };
   } else {
     return {
       ...error,
