@@ -4,12 +4,17 @@ import { LoginInterface } from 'graphql/interfaces';
 import { compareHash } from 'provider/hash-provider';
 import { CustomError } from 'error/errors';
 import { sign } from 'jsonwebtoken';
+import { emailIsValid } from 'provider/email-validation-provider';
 
 export const login = async ({
   email,
   password,
   rememberMe,
 }: LoginInterface): Promise<{ user: User | undefined; token: string }> => {
+  if (!emailIsValid(email)) {
+    throw new CustomError('E-mail inválido.', 401, 'E-mail indicado não condizente.');
+  }
+
   const user = await getRepository(User).findOne({
     where: { email: email },
   });
