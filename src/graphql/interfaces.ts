@@ -3,3 +3,11 @@ export interface LoginInterface {
   password: string;
   rememberMe?: boolean;
 }
+
+export interface CreateuserInterface {
+  name: string;
+  email: string;
+  birthDate: string;
+  cpf: string;
+  password: string;
+}

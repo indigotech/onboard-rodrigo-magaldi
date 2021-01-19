@@ -1,5 +1,6 @@
 import { login } from 'datasource/login';
-import { LoginInterface } from 'graphql/interfaces';
+import { createUser } from 'datasource/create-user';
+import { CreateuserInterface, LoginInterface } from 'graphql/interfaces';
 
 export const resolvers = {
   Query: {
@@ -13,6 +14,10 @@ export const resolvers = {
         user,
         token: token,
       };
+    },
+    createUser: async (_: unknown, { name, email, birthDate, cpf, password }: CreateuserInterface) => {
+      const { user } = await createUser({ name, email, birthDate, cpf, password });
+      return { user };
     },
   },
 };
