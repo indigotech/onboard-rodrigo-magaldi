@@ -33,63 +33,37 @@ describe('User mutation test', async () => {
   });
 
   it('Should return user information upon login (with rememberMe)', async () => {
-    const mutation = {
-      query: `
-      mutation{
-        login(email: "rodrigo@email.com", password: "senha", rememberMe: true){
-          user{
-            name
-            email
-            birthDate
-            cpf
-          },
-          token
-        }
-      }
-    `,
-    };
+    const mutation = buildLoginMutation('rodrigo@email.com', 'senha', true);
 
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.data.login.user.name).to.equal('rodrigo');
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
     expect(response.body.data.login.user.cpf).to.equal('12312312312');
-    expect(checkJWT(response.body.data.login.token, true)).to.equal(true);
+    checkJWT(response.body.data.login.token, true);
   });
 
   it('Should return user information upon login (without rememberMe)', async () => {
-    const mutation = {
-      query: `
-      mutation{
-        login(email: "rodrigo@email.com", password: "senha"){
-          user{
-            name
-            email
-            birthDate
-            cpf
-          },
-          token
-        }
-      }
-    `,
-    };
+    const mutation = buildLoginMutation('rodrigo@email.com', 'senha', false);
 
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.data.login.user.name).to.equal('rodrigo');
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');
     expect(response.body.data.login.user.cpf).to.equal('12312312312');
-    expect(checkJWT(response.body.data.login.token, false)).to.equal(true);
+    checkJWT(response.body.data.login.token, false);
   });
 });
 
-function checkJWT(token, rememberMe): boolean {
+function checkJWT(token, rememberMe) {
   const verified = jwt.verify(token, process.env.JWT_SECRET);
+  let expected: number;
   if (rememberMe) {
-    return verified['iat'] === verified['exp'] - 604800;
+    expected = parseInt(process.env.JWT_REMEMBER_ME_EXPIRATION);
   } else {
-    return verified['iat'] === verified['exp'] - 3600;
+    expected = parseInt(process.env.JWT_EXPIRATION);
   }
+  expect(verified['iat']).to.equal(verified['exp'] - expected / 1000);
 }
 
 async function addUserToDatabase(name, email, birthDate, cpf, password) {
@@ -102,4 +76,22 @@ async function addUserToDatabase(name, email, birthDate, cpf, password) {
     password: hashedPassword,
   });
   await userRepository.save(user);
+}
+
+function buildLoginMutation(email, password, rememberMe) {
+  return {
+    query: `
+    mutation{
+      login(email: "${email}", password: "${password}", rememberMe: ${rememberMe}){
+        user{
+          name
+          email
+          birthDate
+          cpf
+        },
+        token
+      }
+    }
+  `,
+  };
 }
