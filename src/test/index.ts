@@ -34,7 +34,6 @@ describe('Login mutation test', async () => {
 
   it('Should return user information upon login (with rememberMe)', async () => {
     const mutation = buildLoginMutation('rodrigo@email.com', 'senha', true);
-
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.data.login.user.name).to.equal('rodrigo');
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
@@ -45,7 +44,6 @@ describe('Login mutation test', async () => {
 
   it('Should return user information upon login (without rememberMe)', async () => {
     const mutation = buildLoginMutation('rodrigo@email.com', 'senha', false);
-
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.data.login.user.name).to.equal('rodrigo');
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
@@ -56,7 +54,6 @@ describe('Login mutation test', async () => {
 
   it('Should return CustomError with message `E-mail inválido` (email not found)', async () => {
     const mutation = buildLoginMutation('notanemail', 'senha', false);
-
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.errors[0].message).to.equal('E-mail inválido.');
     expect(response.body.errors[0].httpCode).to.equal(401);
@@ -64,7 +61,6 @@ describe('Login mutation test', async () => {
 
   it('Should return CustomError with message `Credenciais inválidas` (email not found)', async () => {
     const mutation = buildLoginMutation('wrong@email.com', 'senha', false);
-
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.errors[0].message).to.equal('Credenciais inválidas.');
     expect(response.body.errors[0].httpCode).to.equal(401);
@@ -72,7 +68,6 @@ describe('Login mutation test', async () => {
 
   it('Should return CustomError with message `Credenciais inválidas` (wrong password)', async () => {
     const mutation = buildLoginMutation('rodrigo@email.com', 'wrong', false);
-
     const response = await request(requestUrl).post('/graphql').send(mutation);
     expect(response.body.errors[0].message).to.equal('Credenciais inválidas.');
     expect(response.body.errors[0].httpCode).to.equal(401);
