@@ -11,3 +11,7 @@ export interface CreateuserInterface {
   cpf: string;
   password: string;
 }
+
+export interface IDInterface {
+  id: number;
+}
