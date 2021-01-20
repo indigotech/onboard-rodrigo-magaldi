@@ -4,14 +4,15 @@ import { LoginInterface } from 'graphql/interfaces';
 import { compareHash } from 'provider/hash-provider';
 import { CustomError } from 'error/errors';
 import { sign } from 'jsonwebtoken';
-import { emailIsValid } from 'provider/email-validation-provider';
+import { isEmailValid } from 'provider/email-validation-provider';
+import { generateToken } from 'provider/token-provider';
 
-export const login = async ({
-  email,
-  password,
-  rememberMe,
-}: LoginInterface): Promise<{ user: User | undefined; token: string }> => {
-  if (!emailIsValid(email)) {
+export const login = async (
+  email: string,
+  password: string,
+  rememberMe?: boolean,
+): Promise<{ user: User | undefined; token: string }> => {
+  if (!isEmailValid(email)) {
     throw new CustomError('E-mail inválido.', 400, 'E-mail indicado não condizente.');
   }
 
@@ -29,9 +30,7 @@ export const login = async ({
     throw new CustomError('Credenciais inválidas.', 401, 'Combinação email/senha inexistente.');
   }
 
-  const token = sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: rememberMe ? process.env.JWT_REMEMBER_ME_EXPIRATION : process.env.JWT_EXPIRATION,
-  });
+  const token = generateToken(user.id, rememberMe);
 
   return { user, token };
 };

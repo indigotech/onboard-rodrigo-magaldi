@@ -19,6 +19,7 @@ describe('Login mutation test', async () => {
   it('Should return user information upon login (with rememberMe)', async () => {
     const mutation = buildLoginMutation('rodrigo@email.com', 'senha', true);
     const response = await request(requestUrl).post('/graphql').send(mutation);
+    expect(response.body.data.login.user.id).to.be.a('string');
     expect(response.body.data.login.user.name).to.equal('rodrigo');
     expect(response.body.data.login.user.email).to.equal('rodrigo@email.com');
     expect(response.body.data.login.user.birthDate).to.equal('01-01-1997');

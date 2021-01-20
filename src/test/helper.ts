@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { generateHash } from 'provider/hash-provider';
 import { getRepository } from 'typeorm';
 import { User } from 'entity/user';
-import request from 'supertest';
 
 export function checkJWT(token, rememberMe) {
   const verified = jwt.verify(token, process.env.JWT_SECRET);
@@ -32,9 +31,10 @@ export async function addUserToDatabase(name, email, birthDate, cpf, password) {
 export function buildLoginMutation(email, password, rememberMe) {
   return {
     query: `
-    mutation{
-      login(email: "${email}", password: "${password}", rememberMe: ${rememberMe}){
+    mutation Login($loginInput: LoginInput!) {
+      login(loginInput: $loginInput){
         user{
+          id
           name
           email
           birthDate
@@ -44,14 +44,21 @@ export function buildLoginMutation(email, password, rememberMe) {
       }
     }
   `,
+    variables: {
+      loginInput: {
+        email,
+        password,
+        rememberMe,
+      },
+    },
   };
 }
 
 export function buildUserCreationMutation(name, email, birthDate, cpf, password) {
   return {
     query: `
-    mutation CreateUser {
-      createUser (name: "${name}", email: "${email}", birthDate: "${birthDate}", cpf: "${cpf}", password: "${password}") {
+    mutation CreateUser ($createUserInput: CreateUserInput!) {
+      createUser (createUserInput: $createUserInput) {
         user {
           id
           name
@@ -62,6 +69,15 @@ export function buildUserCreationMutation(name, email, birthDate, cpf, password)
       }
     }
     `,
+    variables: {
+      createUserInput: {
+        name,
+        email,
+        birthDate,
+        cpf,
+        password,
+      },
+    },
   };
 }
 
@@ -81,10 +97,4 @@ export function buildUserQueryByIDMutation(id) {
     }
     `,
   };
-}
-
-export async function getTokenByLogin(requestUrl) {
-  const loginMutation = buildLoginMutation('rodrigo@email.com', 'senha', false);
-  const loginResponse = await request(requestUrl).post('/graphql').send(loginMutation);
-  return loginResponse.body.data.login.token;
 }

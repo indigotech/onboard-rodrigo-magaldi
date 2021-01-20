@@ -1,14 +1,16 @@
 import { User } from 'entity/user';
-import { addUserToDatabase, buildUserCreationMutation, getTokenByLogin } from 'test/helper';
+import { addUserToDatabase, buildUserCreationMutation } from 'test/helper';
 import { getRepository } from 'typeorm';
 import request from 'supertest';
 import { expect } from 'chai';
+import { generateToken } from 'provider/token-provider';
 
 let requestUrl: string;
+let sampleUserId: number;
 
 describe('User creation mutation test', async () => {
   before(async () => {
-    await addUserToDatabase('rodrigo', 'rodrigo@email.com', '01-01-1997', '12312312312', 'senha');
+    sampleUserId = await addUserToDatabase('rodrigo', 'rodrigo@email.com', '01-01-1997', '12312312312', 'senha');
     requestUrl = `http://localhost:${process.env.PORT}`;
   });
 
@@ -17,7 +19,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should create a new user in the database', async () => {
-    const authToken = await getTokenByLogin(requestUrl);
+    const authToken = generateToken(sampleUserId, true);
 
     const userCreationMutation = buildUserCreationMutation(
       'rafael',
@@ -31,6 +33,7 @@ describe('User creation mutation test', async () => {
       .set('Authorization', authToken)
       .send(userCreationMutation);
 
+    expect(userCreationResponse.body.data.createUser.user.id).to.be.a('string');
     expect(userCreationResponse.body.data.createUser.user.name).to.equal('rafael');
     expect(userCreationResponse.body.data.createUser.user.email).to.equal('rafael@email.com');
     expect(userCreationResponse.body.data.createUser.user.birthDate).to.equal('04-02-1995');
@@ -40,6 +43,7 @@ describe('User creation mutation test', async () => {
       where: { email: 'rafael@email.com' },
     });
 
+    expect(addedUser.id).to.be.a('number');
     expect(addedUser.name).to.equal('rafael');
     expect(addedUser.email).to.equal('rafael@email.com');
     expect(addedUser.birthDate).to.equal('04-02-1995');
@@ -64,7 +68,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should return CustomError with message `E-mail já cadastrado.`', async () => {
-    const authToken = await getTokenByLogin(requestUrl);
+    const authToken = generateToken(sampleUserId, true);
 
     const userCreationMutation = buildUserCreationMutation(
       'nome',
@@ -83,7 +87,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should return CustomError with message `Senha inadequada.`', async () => {
-    const authToken = await getTokenByLogin(requestUrl);
+    const authToken = generateToken(sampleUserId, true);
 
     const userCreationMutation = buildUserCreationMutation(
       'nome',

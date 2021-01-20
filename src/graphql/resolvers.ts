@@ -1,7 +1,7 @@
 import { login } from 'datasource/login';
 import { createUser } from 'datasource/create-user';
 import { CreateuserInterface, IDInterface, LoginInterface } from 'graphql/interfaces';
-import { tokenIsValid } from 'provider/token-validation-provider';
+import { isTokenValid } from 'provider/token-validation-provider';
 import { CustomError } from 'error/errors';
 import { queryUser } from 'datasource/query-user';
 
@@ -9,7 +9,7 @@ export const resolvers = {
   Query: {
     hello: (): String => 'Hello, world!',
     user: async (_: unknown, { id }: IDInterface, context) => {
-      if (!tokenIsValid(context['token'])) {
+      if (!isTokenValid(context['token'])) {
         throw new CustomError('JWT inválido.', 401, 'Operação não autorizada.');
       }
       const { user } = await queryUser(id);
@@ -18,19 +18,24 @@ export const resolvers = {
   },
 
   Mutation: {
-    login: async (_: unknown, { email, password, rememberMe }: LoginInterface) => {
-      const { user, token } = await login({ email, password, rememberMe });
+    login: async (_: unknown, { loginInput }: { loginInput: LoginInterface }) => {
+      const { user, token } = await login(loginInput.email, loginInput.password, loginInput.rememberMe);
       return {
         user,
         token: token,
       };
     },
-    createUser: async (_: unknown, { name, email, birthDate, cpf, password }: CreateuserInterface, context) => {
-      if (!tokenIsValid(context['token'])) {
+    createUser: async (_: unknown, { createUserInput }: { createUserInput: CreateuserInterface }, context) => {
+      if (!isTokenValid(context['token'])) {
         throw new CustomError('JWT inválido.', 401, 'Operação não autorizada.');
       }
-      const { user } = await createUser({ name, email, birthDate, cpf, password });
-      return { user };
+      return createUser(
+        createUserInput.name,
+        createUserInput.email,
+        createUserInput.birthDate,
+        createUserInput.cpf,
+        createUserInput.password,
+      );
     },
   },
 };

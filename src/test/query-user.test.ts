@@ -1,8 +1,9 @@
 import { User } from 'entity/user';
-import { addUserToDatabase, buildUserCreationMutation, buildUserQueryByIDMutation, getTokenByLogin } from 'test/helper';
+import { addUserToDatabase, buildUserCreationMutation, buildUserQueryByIDMutation } from 'test/helper';
 import { getRepository } from 'typeorm';
 import request from 'supertest';
 import { expect } from 'chai';
+import { generateToken } from 'provider/token-provider';
 
 let requestUrl: string;
 let sampleUserId: number;
@@ -18,7 +19,7 @@ describe('User query by ID test', async () => {
   });
 
   it('Should retrieve a user from the database', async () => {
-    const authToken = await getTokenByLogin(requestUrl);
+    const authToken = generateToken(sampleUserId, true);
 
     const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId);
     const userQueryByIDResponse = await request(requestUrl)
@@ -42,7 +43,7 @@ describe('User query by ID test', async () => {
   });
 
   it('Should return CustomError with message `Usuário não encontrado.`', async () => {
-    const authToken = await getTokenByLogin(requestUrl);
+    const authToken = generateToken(sampleUserId, true);
 
     const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId + 1000);
     const userQueryByIDResponse = await request(requestUrl)

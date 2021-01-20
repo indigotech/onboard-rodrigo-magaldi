@@ -9,7 +9,7 @@ export const typeDefs = gql(`
     cpf: String!
   }
 
-  type Login {
+  type ReturnLogin {
     user: User!
     token: String!
   }
@@ -18,13 +18,27 @@ export const typeDefs = gql(`
     user: User!
   }
 
+  input LoginInput {
+    email: String!
+    password: String!
+    rememberMe: Boolean
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    birthDate: String!
+    cpf: String!
+    password: String!
+  }
+
   type Query {
     hello: String!
     user(id: ID!): ReturnUser!
   }
 
   type Mutation {
-    login(email: String!, password: String!, rememberMe: Boolean): Login!
-    createUser(name: String!, email: String!, birthDate: String!, cpf: String!, password: String!): ReturnUser!
+    login(loginInput: LoginInput!): ReturnLogin!
+    createUser(createUserInput: CreateUserInput!): ReturnUser!
   }
 `);
