@@ -1,5 +1,5 @@
 import { User } from 'entity/user';
-import { addUserToDatabase, buildUserCreationMutation, loginBeforeCreatingUser } from 'test/helper';
+import { addUserToDatabase, buildUserCreationMutation, getTokenByLogin } from 'test/helper';
 import { getRepository } from 'typeorm';
 import request from 'supertest';
 import { expect } from 'chai';
@@ -17,7 +17,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should create a new user in the database', async () => {
-    const authToken = await loginBeforeCreatingUser(requestUrl);
+    const authToken = await getTokenByLogin(requestUrl);
 
     const userCreationMutation = buildUserCreationMutation(
       'rafael',
@@ -64,7 +64,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should return CustomError with message `E-mail já cadastrado.`', async () => {
-    const authToken = await loginBeforeCreatingUser(requestUrl);
+    const authToken = await getTokenByLogin(requestUrl);
 
     const userCreationMutation = buildUserCreationMutation(
       'nome',
@@ -83,7 +83,7 @@ describe('User creation mutation test', async () => {
   });
 
   it('Should return CustomError with message `Senha inadequada.`', async () => {
-    const authToken = await loginBeforeCreatingUser(requestUrl);
+    const authToken = await getTokenByLogin(requestUrl);
 
     const userCreationMutation = buildUserCreationMutation(
       'nome',

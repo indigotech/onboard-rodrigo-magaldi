@@ -26,6 +26,7 @@ export async function addUserToDatabase(name, email, birthDate, cpf, password) {
     password: hashedPassword,
   });
   await getRepository(User).save(user);
+  return user.id;
 }
 
 export function buildLoginMutation(email, password, rememberMe) {
@@ -64,7 +65,25 @@ export function buildUserCreationMutation(name, email, birthDate, cpf, password)
   };
 }
 
-export async function loginBeforeCreatingUser(requestUrl) {
+export function buildUserQueryByIDMutation(id) {
+  return {
+    query: `
+    query QueryUser {
+      user (id: ${id}) {
+        user {
+          id
+          name
+          email
+          birthDate
+          cpf
+        }
+      }
+    }
+    `,
+  };
+}
+
+export async function getTokenByLogin(requestUrl) {
   const loginMutation = buildLoginMutation('rodrigo@email.com', 'senha', false);
   const loginResponse = await request(requestUrl).post('/graphql').send(loginMutation);
   return loginResponse.body.data.login.token;

@@ -6,3 +6,4 @@ before(async () => {
 
 require('test/login.test.ts');
 require('test/create-user.test.ts');
+require('test/query-user.test.ts');
