@@ -28,6 +28,11 @@ export async function runServer() {
     typeDefs,
     resolvers,
     formatError: formatError,
+    context: ({ req }) => {
+      return {
+        token: req.headers.authorization,
+      };
+    },
   });
 
   await server.listen(process.env.PORT);

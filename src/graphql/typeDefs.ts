@@ -14,11 +14,16 @@ export const typeDefs = gql(`
     token: String!
   }
 
+  type CreateUser {
+    user: User!
+  }
+
   type Query {
     hello: String!
   }
 
   type Mutation {
-    login(email: String!, password: String!, rememberMe: Boolean): Login!
+    login(email: String!, password: String!, rememberMe: Boolean): Login!,
+    createUser(name: String!, email: String!, birthDate: String!, cpf: String!, password: String!): CreateUser!
   }
 `);
