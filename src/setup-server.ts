@@ -12,15 +12,19 @@ export async function setup() {
   await runServer();
 }
 
-async function connectToDatabase() {
-  await createConnection({
-    type: 'postgres',
-    url: process.env.DATABASE_URL,
-    entities: [User],
-    synchronize: true,
-    logging: false,
-  });
-  console.log('Database connection successful\n');
+export async function connectToDatabase() {
+  try {
+    await createConnection({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      entities: [User],
+      synchronize: true,
+      logging: false,
+    });
+    console.log('Database connection successful\n');
+  } catch (err) {
+    throw err;
+  }
 }
 
 export async function runServer() {
