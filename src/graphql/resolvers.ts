@@ -15,11 +15,11 @@ export const resolvers = {
       }
       return queryUser(id);
     },
-    users: (_, { max }: IQueryUsersInput, context) => {
+    users: (_, { limit, offset }: IQueryUsersInput, context) => {
       if (!isTokenValid(context['token'])) {
         throw new CustomError('JWT inválido.', 401, 'Operação não autorizada.');
       }
-      return queryUsers(max);
+      return queryUsers(limit, offset);
     },
   },
 

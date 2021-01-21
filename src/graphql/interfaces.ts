@@ -17,5 +17,6 @@ export interface IQueryUserInput {
 }
 
 export interface IQueryUsersInput {
-  max: number;
+  limit: number;
+  offset: number;
 }

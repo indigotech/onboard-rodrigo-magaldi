@@ -31,7 +31,7 @@ export const typeDefs = gql(`
   type Query {
     hello: String!
     user(id: ID!): User!
-    users(max: Int = 10): [User!]!
+    users(limit: Int = 10, offset: Int = 0): [User!]!
   }
 
   type Mutation {
