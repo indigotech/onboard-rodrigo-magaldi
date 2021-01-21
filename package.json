@@ -4,8 +4,9 @@
   "description": "Onboarding Taqtile Magaldi",
   "main": "index.js",
   "scripts": {
-    "dev:server": "ENV=dev ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/server.ts",
-    "dev:test": "ENV=test mocha -r ts-node/register -r tsconfig-paths/register --exit src/test/index.ts"
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/server.ts",
+    "test": "ENV=test mocha -r ts-node/register -r tsconfig-paths/register --exit src/test/index.ts",
+    "seeds": ""
   },
   "repository": {
     "type": "git",
