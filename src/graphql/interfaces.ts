@@ -12,6 +12,10 @@ export interface ICreateUserInput {
   password: string;
 }
 
-export interface IIDInput {
+export interface IQueryUserInput {
   id: number;
+}
+
+export interface IQueryUsersInput {
+  max: number;
 }
