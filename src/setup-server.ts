@@ -23,7 +23,7 @@ export async function connectToDatabase() {
     });
     console.log('Database connection successful\n');
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
 
