@@ -59,13 +59,11 @@ export function buildUserCreationMutation(name, email, birthDate, cpf, password)
     query: `
     mutation CreateUser ($createUserInput: CreateUserInput!) {
       createUser (createUserInput: $createUserInput) {
-        user {
-          id
-          name
-          email
-          birthDate
-          cpf
-        }
+        id
+        name
+        email
+        birthDate
+        cpf
       }
     }
     `,
@@ -86,13 +84,11 @@ export function buildUserQueryByIDMutation(id) {
     query: `
     query QueryUser {
       user (id: ${id}) {
-        user {
-          id
-          name
-          email
-          birthDate
-          cpf
-        }
+        id
+        name
+        email
+        birthDate
+        cpf
       }
     }
     `,

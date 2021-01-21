@@ -27,11 +27,11 @@ describe('User query by ID test', async () => {
       .set('Authorization', authToken)
       .send(userQueryByIDMutation);
 
-    expect(userQueryByIDResponse.body.data.user.user.id).to.equal(String(sampleUserId));
-    expect(userQueryByIDResponse.body.data.user.user.name).to.equal('rodrigo');
-    expect(userQueryByIDResponse.body.data.user.user.email).to.equal('rodrigo@email.com');
-    expect(userQueryByIDResponse.body.data.user.user.birthDate).to.equal('01-01-1997');
-    expect(userQueryByIDResponse.body.data.user.user.cpf).to.equal('12312312312');
+    expect(userQueryByIDResponse.body.data.user.id).to.equal(String(sampleUserId));
+    expect(userQueryByIDResponse.body.data.user.name).to.equal('rodrigo');
+    expect(userQueryByIDResponse.body.data.user.email).to.equal('rodrigo@email.com');
+    expect(userQueryByIDResponse.body.data.user.birthDate).to.equal('01-01-1997');
+    expect(userQueryByIDResponse.body.data.user.cpf).to.equal('12312312312');
   });
 
   it('Should return CustomError with message `JWT inválido.`', async () => {

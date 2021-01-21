@@ -1,6 +1,5 @@
 import { User } from 'entity/user';
 import { CustomError } from 'error/errors';
-import { CreateuserInterface } from 'graphql/interfaces';
 import { generateHash } from 'provider/hash-provider';
 import { getRepository } from 'typeorm';
 
@@ -32,5 +31,5 @@ export const createUser = async (name: string, email: string, birthDate: string,
 
   await getRepository(User).save(user);
 
-  return { user };
+  return user;
 };

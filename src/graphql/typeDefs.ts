@@ -9,13 +9,9 @@ export const typeDefs = gql(`
     cpf: String!
   }
 
-  type ReturnLogin {
+  type Login {
     user: User!
     token: String!
-  }
-
-  type ReturnUser {
-    user: User!
   }
 
   input LoginInput {
@@ -34,11 +30,11 @@ export const typeDefs = gql(`
 
   type Query {
     hello: String!
-    user(id: ID!): ReturnUser!
+    user(id: ID!): User!
   }
 
   type Mutation {
-    login(loginInput: LoginInput!): ReturnLogin!
-    createUser(createUserInput: CreateUserInput!): ReturnUser!
+    login(loginInput: LoginInput!): Login!
+    createUser(createUserInput: CreateUserInput!): User!
   }
 `);

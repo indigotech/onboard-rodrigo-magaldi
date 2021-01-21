@@ -1,10 +1,10 @@
-export interface LoginInterface {
+export interface ILoginInput {
   email: string;
   password: string;
   rememberMe?: boolean;
 }
 
-export interface CreateuserInterface {
+export interface ICreateUserInput {
   name: string;
   email: string;
   birthDate: string;
@@ -12,6 +12,6 @@ export interface CreateuserInterface {
   password: string;
 }
 
-export interface IDInterface {
+export interface IIDInput {
   id: number;
 }

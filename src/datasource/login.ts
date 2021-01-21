@@ -1,9 +1,7 @@
 import { User } from 'entity/user';
 import { getRepository } from 'typeorm';
-import { LoginInterface } from 'graphql/interfaces';
 import { compareHash } from 'provider/hash-provider';
 import { CustomError } from 'error/errors';
-import { sign } from 'jsonwebtoken';
 import { isEmailValid } from 'provider/email-validation-provider';
 import { generateToken } from 'provider/token-provider';
 

@@ -33,11 +33,11 @@ describe('User creation mutation test', async () => {
       .set('Authorization', authToken)
       .send(userCreationMutation);
 
-    expect(userCreationResponse.body.data.createUser.user.id).to.be.a('string');
-    expect(userCreationResponse.body.data.createUser.user.name).to.equal('rafael');
-    expect(userCreationResponse.body.data.createUser.user.email).to.equal('rafael@email.com');
-    expect(userCreationResponse.body.data.createUser.user.birthDate).to.equal('04-02-1995');
-    expect(userCreationResponse.body.data.createUser.user.cpf).to.equal('12345678910');
+    expect(userCreationResponse.body.data.createUser.id).to.be.a('string');
+    expect(userCreationResponse.body.data.createUser.name).to.equal('rafael');
+    expect(userCreationResponse.body.data.createUser.email).to.equal('rafael@email.com');
+    expect(userCreationResponse.body.data.createUser.birthDate).to.equal('04-02-1995');
+    expect(userCreationResponse.body.data.createUser.cpf).to.equal('12345678910');
 
     const addedUser = await getRepository(User).findOne({
       where: { email: 'rafael@email.com' },
