@@ -6,7 +6,7 @@
   "scripts": {
     "dev:server": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules src/server.ts",
     "test": "ENV=test mocha -r ts-node/register -r tsconfig-paths/register --exit src/test/index.ts",
-    "seeds": ""
+    "seeds": "ts-node -r tsconfig-paths/register src/seeds/db-seeds.ts"
   },
   "repository": {
     "type": "git",
@@ -43,9 +43,11 @@
     "@typescript-eslint/parser": "4.13.0",
     "chai": "4.2.0",
     "eslint": "7.17.0",
+    "faker": "5.1.0",
     "mocha": "8.2.1",
     "prettier": "2.2.1",
     "supertest": "6.0.1",
+    "ts-node": "9.1.1",
     "ts-node-dev": "1.1.1",
     "tsconfig-paths": "3.9.0",
     "typescript": "4.1.3"
