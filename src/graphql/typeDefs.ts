@@ -12,6 +12,8 @@ export const typeDefs = gql(`
   type UsersList {
     users: [User!]!
     count: Int!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
   }
 
   type Login {

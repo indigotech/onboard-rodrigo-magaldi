@@ -12,5 +12,8 @@ export const queryUsers = async (limit: number, offset: number) => {
 
   const count = await getRepository(User).count();
 
-  return { users, count };
+  const hasPreviousPage = offset === 0 ? false : true;
+  const hasNextPage = offset + limit < count ? true : false;
+
+  return { users, count, hasNextPage, hasPreviousPage };
 };
