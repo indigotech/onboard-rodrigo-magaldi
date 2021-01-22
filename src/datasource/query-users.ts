@@ -22,6 +22,7 @@ export const queryUsers = async (limit: number, offset: number) => {
     },
     take: limit,
     skip: offset,
+    relations: ['addresses'],
   });
 
   return { users, count, hasNextPage, hasPreviousPage };

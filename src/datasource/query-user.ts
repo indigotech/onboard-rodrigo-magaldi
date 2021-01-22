@@ -3,7 +3,9 @@ import { CustomError } from 'error/errors';
 import { getRepository } from 'typeorm';
 
 export const queryUser = async (id: number) => {
-  const user = await getRepository(User).findOne({ id });
+  const user = await getRepository(User).findOne({ id }, { relations: ['addresses'] });
+
+  console.log(user);
 
   if (!user) {
     throw new CustomError('Usuário não encontrado.', 404, 'ID fornecido não corresponde a nenhum usuário cadastrado.');
