@@ -5,14 +5,12 @@ import { generateHash } from 'provider/hash-provider';
 import { connectToDatabase } from 'setup-server';
 import { getRepository } from 'typeorm';
 
-async function seedUsers() {
-  envConfig();
-  await connectToDatabase();
+export const seedUsers = async (numberOfUsers: number) => {
   const usersRepository = getRepository(User);
 
   const usersList = [];
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < numberOfUsers; i++) {
     const hashedPassword = await generateHash('senha123');
     const user = {
       name: name.findName(),
@@ -26,6 +24,14 @@ async function seedUsers() {
   }
 
   await usersRepository.save(usersList);
+};
+
+async function runSeed() {
+  envConfig();
+  await connectToDatabase();
+  await seedUsers(2);
 }
 
-seedUsers();
+if (require.main === module) {
+  runSeed();
+}

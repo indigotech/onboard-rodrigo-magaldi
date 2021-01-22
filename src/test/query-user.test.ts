@@ -1,5 +1,5 @@
 import { User } from 'entity/user';
-import { addUserToDatabase, buildUserCreationMutation, buildUserQueryByIDMutation } from 'test/helper';
+import { addUserToDatabase, buildUserCreationMutation, buildUserQueryByID } from 'test/helper';
 import { getRepository } from 'typeorm';
 import request from 'supertest';
 import { expect } from 'chai';
@@ -21,11 +21,11 @@ describe('User query by ID test', async () => {
   it('Should retrieve a user from the database', async () => {
     const authToken = generateToken(sampleUserId, true);
 
-    const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId);
+    const userQueryByID = buildUserQueryByID(sampleUserId);
     const userQueryByIDResponse = await request(requestUrl)
       .post('/graphql')
       .set('Authorization', authToken)
-      .send(userQueryByIDMutation);
+      .send(userQueryByID);
 
     expect(userQueryByIDResponse.body.data.user.id).to.equal(String(sampleUserId));
     expect(userQueryByIDResponse.body.data.user.name).to.equal('rodrigo');
@@ -35,8 +35,8 @@ describe('User query by ID test', async () => {
   });
 
   it('Should return CustomError with message `JWT inválido.`', async () => {
-    const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId);
-    const userQueryByIDResponse = await request(requestUrl).post('/graphql').send(userQueryByIDMutation);
+    const userQueryByID = buildUserQueryByID(sampleUserId);
+    const userQueryByIDResponse = await request(requestUrl).post('/graphql').send(userQueryByID);
 
     expect(userQueryByIDResponse.body.errors[0].message).to.equal('JWT inválido.');
     expect(userQueryByIDResponse.body.errors[0].httpCode).to.equal(401);
@@ -45,11 +45,11 @@ describe('User query by ID test', async () => {
   it('Should return CustomError with message `Usuário não encontrado.`', async () => {
     const authToken = generateToken(sampleUserId, true);
 
-    const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId + 1000);
+    const userQueryByID = buildUserQueryByID(sampleUserId + 1000);
     const userQueryByIDResponse = await request(requestUrl)
       .post('/graphql')
       .set('Authorization', authToken)
-      .send(userQueryByIDMutation);
+      .send(userQueryByID);
 
     expect(userQueryByIDResponse.body.errors[0].message).to.equal('Usuário não encontrado.');
     expect(userQueryByIDResponse.body.errors[0].httpCode).to.equal(404);
