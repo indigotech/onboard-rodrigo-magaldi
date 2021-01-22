@@ -14,7 +14,7 @@ export const queryUsers = async (limit: number, offset: number) => {
   const count = await getRepository(User).count();
 
   const hasPreviousPage = offset === 0 ? false : true;
-  const hasNextPage = offset + limit < count && limit != 0 ? true : false;
+  const hasNextPage = offset + limit < count ? true : false;
 
   const users = await getRepository(User).find({
     order: {
