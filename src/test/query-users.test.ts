@@ -1,5 +1,5 @@
 import { User } from 'entity/user';
-import { addUserToDatabase, buildUsersListQuery } from 'test/helper';
+import { addUserToDatabase, buildUsersListQuery, checkUsers } from 'test/helper';
 import { getRepository } from 'typeorm';
 import request from 'supertest';
 import { expect, Assertion } from 'chai';
@@ -20,6 +20,23 @@ describe('Users list query test', async () => {
     await getRepository(User).clear();
   });
 
+  it('Should retrieve users 1-10 from the database', async () => {
+    const authToken = generateToken(sampleUserId, true);
+
+    const usersListQuery = buildUsersListQuery(10, 0);
+    const usersListQueryResponse = await request(requestUrl)
+      .post('/graphql')
+      .set('Authorization', authToken)
+      .send(usersListQuery);
+
+    expect(usersListQueryResponse.body.data.users.count).to.equal(50);
+    expect(usersListQueryResponse.body.data.users.hasNextPage).to.true;
+    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.false;
+    expect(usersListQueryResponse.body.data.users.users).to.have.lengthOf(10);
+
+    checkUsers(usersListQueryResponse.body.data.users.users);
+  });
+
   it('Should retrieve users 21-30 from the database', async () => {
     const authToken = generateToken(sampleUserId, true);
 
@@ -30,16 +47,11 @@ describe('Users list query test', async () => {
       .send(usersListQuery);
 
     expect(usersListQueryResponse.body.data.users.count).to.equal(50);
-    expect(usersListQueryResponse.body.data.users.hasNextPage).to.equal(true);
-    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.equal(true);
+    expect(usersListQueryResponse.body.data.users.hasNextPage).to.true;
+    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.true;
     expect(usersListQueryResponse.body.data.users.users).to.have.lengthOf(10);
 
-    expect(usersListQueryResponse.body.data.users.users[0]).to.have.all.keys('id', 'name', 'email', 'birthDate', 'cpf');
-    expect(usersListQueryResponse.body.data.users.users[0].id).to.be.a('string');
-    expect(usersListQueryResponse.body.data.users.users[0].name).to.be.a('string');
-    expect(usersListQueryResponse.body.data.users.users[0].email).to.be.a('string');
-    expect(usersListQueryResponse.body.data.users.users[0].birthDate).to.be.a('string');
-    expect(usersListQueryResponse.body.data.users.users[0].cpf).to.be.a('string');
+    checkUsers(usersListQueryResponse.body.data.users.users);
   });
 
   it('Should skip all users and return empty data', async () => {
@@ -52,8 +64,8 @@ describe('Users list query test', async () => {
       .send(usersListQuery);
 
     expect(usersListQueryResponse.body.data.users.count).to.equal(50);
-    expect(usersListQueryResponse.body.data.users.hasNextPage).to.equal(false);
-    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.equal(true);
+    expect(usersListQueryResponse.body.data.users.hasNextPage).to.false;
+    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.true;
     expect(usersListQueryResponse.body.data.users.users).to.be.deep.eq([]);
   });
 

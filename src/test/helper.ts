@@ -28,6 +28,24 @@ export async function addUserToDatabase(name, email, birthDate, cpf, password) {
   return user.id;
 }
 
+function isUser(obj: any) {
+  expect(obj).to.have.all.keys('id', 'name', 'email', 'birthDate', 'cpf');
+  expect(obj.id).to.be.a('string');
+  expect(obj.name).to.be.a('string');
+  expect(obj.email).to.be.a('string');
+  expect(obj.birthDate).to.be.a('string');
+  expect(obj.cpf).to.be.a('string');
+}
+
+export function checkUsers(users) {
+  let namesList = [];
+  users.map((user) => {
+    isUser(user);
+    namesList.push(user.name);
+  });
+  expect(namesList.sort()).to.deep.eq(namesList);
+}
+
 export function buildLoginMutation(email, password, rememberMe) {
   return {
     query: `
