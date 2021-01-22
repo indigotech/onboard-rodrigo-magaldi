@@ -95,7 +95,7 @@ export function buildUserQueryByID(id) {
   };
 }
 
-export function buildUsersListQuery(limit, offset) {
+export function buildUsersListQuery(limit?: number, offset?: number) {
   return {
     query: `
     query QueryUsers {
