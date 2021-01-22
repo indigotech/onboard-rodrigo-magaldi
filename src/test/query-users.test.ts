@@ -33,28 +33,34 @@ describe('Users list query test', async () => {
     expect(usersListQueryResponse.body.data.users.hasNextPage).to.equal(false);
     expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.equal(false);
 
-    // insufficent validation. still needs improvement
     expect(usersListQueryResponse.body.data.users.users[0]).to.have.all.keys('id', 'name', 'email', 'birthDate', 'cpf');
+    expect(usersListQueryResponse.body.data.users.users[0].id).to.be.a('string');
+    expect(usersListQueryResponse.body.data.users.users[0].name).to.be.a('string');
+    expect(usersListQueryResponse.body.data.users.users[0].email).to.be.a('string');
+    expect(usersListQueryResponse.body.data.users.users[0].birthDate).to.be.a('string');
+    expect(usersListQueryResponse.body.data.users.users[0].cpf).to.be.a('string');
   });
 
-  // it('Should return CustomError with message `JWT inválido.`', async () => {
-  //   const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId);
-  //   const userQueryByIDResponse = await request(requestUrl).post('/graphql').send(userQueryByIDMutation);
+  it('Should return CustomError with message `JWT inválido.`', async () => {
+    const usersListQuery = buildUsersListQuery(0, 0);
+    const usersListQueryResponse = await request(requestUrl).post('/graphql').send(usersListQuery);
 
-  //   expect(userQueryByIDResponse.body.errors[0].message).to.equal('JWT inválido.');
-  //   expect(userQueryByIDResponse.body.errors[0].httpCode).to.equal(401);
-  // });
+    expect(usersListQueryResponse.body.errors[0].message).to.equal('JWT inválido.');
+    expect(usersListQueryResponse.body.errors[0].httpCode).to.equal(401);
+  });
 
-  // it('Should return CustomError with message `Usuário não encontrado.`', async () => {
-  //   const authToken = generateToken(sampleUserId, true);
+  it('Should skip all users and return empty data', async () => {
+    const authToken = generateToken(sampleUserId, true);
 
-  //   const userQueryByIDMutation = buildUserQueryByIDMutation(sampleUserId + 1000);
-  //   const userQueryByIDResponse = await request(requestUrl)
-  //     .post('/graphql')
-  //     .set('Authorization', authToken)
-  //     .send(userQueryByIDMutation);
+    const usersListQuery = buildUsersListQuery(0, 50);
+    const usersListQueryResponse = await request(requestUrl)
+      .post('/graphql')
+      .set('Authorization', authToken)
+      .send(usersListQuery);
 
-  //   expect(userQueryByIDResponse.body.errors[0].message).to.equal('Usuário não encontrado.');
-  //   expect(userQueryByIDResponse.body.errors[0].httpCode).to.equal(404);
-  // });
+    expect(usersListQueryResponse.body.data.users.count).to.equal(50);
+    expect(usersListQueryResponse.body.data.users.hasNextPage).to.equal(false);
+    expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.equal(true);
+    expect(usersListQueryResponse.body.data.users.users).to.be.empty;
+  });
 });
