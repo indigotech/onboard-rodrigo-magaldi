@@ -54,7 +54,7 @@ describe('Users list query test', async () => {
     expect(usersListQueryResponse.body.data.users.count).to.equal(50);
     expect(usersListQueryResponse.body.data.users.hasNextPage).to.equal(false);
     expect(usersListQueryResponse.body.data.users.hasPreviousPage).to.equal(true);
-    expect(usersListQueryResponse.body.data.users.users).to.be.empty;
+    expect(usersListQueryResponse.body.data.users.users).to.be.deep.eq([]);
   });
 
   it('Should return CustomError with message `JWT inválido.`', async () => {
