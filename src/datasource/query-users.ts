@@ -3,8 +3,8 @@ import { CustomError } from 'error/errors';
 import { getRepository } from 'typeorm';
 
 export const queryUsers = async (limit: number, offset: number) => {
-  if (limit < 0) {
-    throw new CustomError('Limite inválido.', 400, 'Não é possível realizar a query com limite negativo.');
+  if (limit <= 0) {
+    throw new CustomError('Limite inválido.', 400, 'Não é possível realizar a query com limite 0 ou negativo.');
   }
 
   if (offset < 0) {
