@@ -9,6 +9,13 @@ export const typeDefs = gql(`
     cpf: String!
   }
 
+  type UsersList {
+    users: [User!]!
+    count: Int!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+  }
+
   type Login {
     user: User!
     token: String!
@@ -31,6 +38,7 @@ export const typeDefs = gql(`
   type Query {
     hello: String!
     user(id: ID!): User!
+    users(limit: Int = 10, offset: Int = 0): UsersList!
   }
 
   type Mutation {

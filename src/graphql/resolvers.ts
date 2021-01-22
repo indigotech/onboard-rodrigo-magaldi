@@ -1,18 +1,25 @@
 import { login } from 'datasource/login';
 import { createUser } from 'datasource/create-user';
-import { ICreateUserInput, IIDInput, ILoginInput } from 'graphql/interfaces';
+import { ICreateUserInput, IQueryUserInput, ILoginInput, IQueryUsersInput } from 'graphql/interfaces';
 import { isTokenValid } from 'provider/token-validation-provider';
 import { CustomError } from 'error/errors';
 import { queryUser } from 'datasource/query-user';
+import { queryUsers } from 'datasource/query-users';
 
 export const resolvers = {
   Query: {
     hello: (): String => 'Hello, world!',
-    user: (_, { id }: IIDInput, context) => {
+    user: (_, { id }: IQueryUserInput, context) => {
       if (!isTokenValid(context['token'])) {
         throw new CustomError('JWT inválido.', 401, 'Operação não autorizada.');
       }
       return queryUser(id);
+    },
+    users: (_, { limit, offset }: IQueryUsersInput, context) => {
+      if (!isTokenValid(context['token'])) {
+        throw new CustomError('JWT inválido.', 401, 'Operação não autorizada.');
+      }
+      return queryUsers(limit, offset);
     },
   },
 
