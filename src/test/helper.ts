@@ -79,7 +79,7 @@ export function buildUserCreationMutation(name, email, birthDate, cpf, password)
   };
 }
 
-export function buildUserQueryByIDMutation(id) {
+export function buildUserQueryByID(id) {
   return {
     query: `
     query QueryUser {
@@ -89,6 +89,27 @@ export function buildUserQueryByIDMutation(id) {
         email
         birthDate
         cpf
+      }
+    }
+    `,
+  };
+}
+
+export function buildUsersListQuery(limit, offset) {
+  return {
+    query: `
+    query QueryUsers {
+      users (limit: ${limit}, offset: ${offset}) {
+        hasNextPage
+        hasPreviousPage
+        count
+        users {
+          id
+          name
+          email
+          birthDate
+          cpf
+        }
       }
     }
     `,
